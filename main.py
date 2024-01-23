@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
 import openpyxl
 
 # Read the list of countries: Load the list of countries from the "countries.txt" text file and store it in the "countries" variable.
@@ -13,14 +15,16 @@ data = [["Name Of Business", "Web", "Address", "Country", "Phone", "Email"]]
 # Iterate through the list of countries: For each country in the list, perform the following steps:
 for country in countries:
     # Initialize a web browser using Selenium with "headless" mode, which means the browser will operate without a graphical interface.
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless=new")
-    driver = webdriver.Chrome(options=options)
+    options = Options()
+    options.add_argument('--headless')  # Run Firefox in headless mode
+
+    # Make sure you have GeckoDriver in your PATH or specify the path to the executable
+    driver = webdriver.Firefox(options=options)
 
     print(country)
 
     # Open the Self Storage Association's web page for the given country.
-    driver.get(f"https://www.selfstorage.org/cvweb/cgi-bin/utilities.dll/CustomList?O.ORGNAME=~~&O.COUNTRY={country}&RANGE=1/1000000&O.ISMEMBERFLG=Y&O.NOWEBFLG=%3C%3EY&O.STATUSSTT=Active&SHOWSQL=N&WHP=dir_facility.htm&WBP=dir_facility_list.htm&SORT=ORGNAME&QNAME=FACILITYNODISTANCE")
+    driver.get(f"https://www.selfstorage.org/cvweb/cgi-bin/utilities.dll/CustomList?O.ORGNAME=~~&O.COUNTRY={country}&RANGE=1/100&O.ISMEMBERFLG=Y&O.NOWEBFLG=%3C%3EY&O.STATUSSTT=Active&SHOWSQL=N&WHP=dir_facility.htm&WBP=dir_facility_list.htm&SORT=ORGNAME&QNAME=FACILITYNODISTANCE")
 
     # Analyze the page using BeautifulSoup: Process the HTML content of the page and retrieve information about self-storage facilities.
     soup = BeautifulSoup(driver.page_source, 'lxml')
